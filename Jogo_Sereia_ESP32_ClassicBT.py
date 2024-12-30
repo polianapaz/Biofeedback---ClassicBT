@@ -1655,8 +1655,8 @@ def resultados(pontos, tempo, paciente, data, trat, id_temp, id_pont): #DETALHES
     #plt.plot(id_t, id_p,'gx') #gráfico ideal central
     #plt.plot(temp, pont, 'r--') #gráfico sereia
     plt.plot(tempo2, sereia, 'm-')
-    #plt.plot(tempo2, interp_sup,'c-', linewidth = 2) #gráfico ideal das colunas superiores
-    #plt.plot(tempo2, interp_inf,'c-', linewidth = 2) #gráfico ideal das colunas superiores
+    plt.plot(tempo2, interp_sup,'c-', linewidth = 2) #gráfico ideal das colunas superiores
+    plt.plot(tempo2, interp_inf,'c-', linewidth = 2) #gráfico ideal das colunas superiores
     plt.legend(['Posição Sereia'], loc='best')
 
     
@@ -1902,14 +1902,14 @@ def progresso():
                     return(True)
         pygame.display.update()
 
-
 def grafico(graf, tempototal):
 
     pos_y, pos_x, velocidade_y, pos_yf, pos_xf, pos_xf2, total_pts  = altura_tela - posmin[0], \
                                                           posicao(33, 18, "x") - largura_tela//1.5,\
                                                           0, altura_tela//2, largura_tela//2, \
                                                           round(largura_tela*1.537)-1, 146
-    velocidade_obs = 0.02*largura_tela
+    #Velocidade de deslocamento dos obstáculos
+    velocidade_obs = 0.007*largura_tela
     pos_buble_x = randint(-100, largura_tela)
     pos_buble_y, pos_peix_x, pos_peix_y = 700, -100, 350
     lims = [(-100, 300), (-100, 300), (-100, 300), (1, 10), (-400, 200), (1, 10)]
@@ -2006,17 +2006,7 @@ def grafico(graf, tempototal):
         pos_peix_x += 2
 
 
-####### LIMITAÇÃO DE MOVIMENTOS #################
-
-        #if pos_y < 10:
-        #    pos_y += 20
-
-        #if pos_y >= altura_tela - 10:
-        #    pos_y -= 10
-
 ####### CONTROLE DE MOVIMENTOS DO OBSTÁCULO #################
-
-
 
         ########### DESLOCAMENTO DAS COLUNAS
 
@@ -2135,12 +2125,12 @@ def grafico(graf, tempototal):
                 dado_BT=int(dado_BT/1000)
             pos_y = dado_BT
 
-        nova_posi = pos_y
-        #nova_posi = posmax[0] - (int(pos_y)*(posmax[0]-posmin[0])/altura_tela)
-        timestamp = datetime.now()
-        print(nova_posi,timestamp)
-        pontos_result.append(nova_posi) #Lista com pontos por onde a sereia passou.
-        cont_aux.append(round(contagem, 2)) #Lista com instantes de tempo que a sereia passa por cada ponto de 'pontos_result'.
+            nova_posi = pos_y
+            #nova_posi = posmax[0] - (int(pos_y)*(posmax[0]-posmin[0])/altura_tela)
+            timestamp = datetime.now()
+            print(nova_posi,timestamp)
+            pontos_result.append(nova_posi) #Lista com pontos por onde a sereia passou.
+            cont_aux.append(round(contagem, 2)) #Lista com instantes de tempo que a sereia passa por cada ponto de 'pontos_result'.
 
 
         ####### REGRAS DE LIMITAÇÃO = COLISÃO #################
@@ -2151,18 +2141,18 @@ def grafico(graf, tempototal):
                     proporcao = (75*(posmax[0]-posmin[0])/altura_tela)
                     ideal_pont.append(posmax[0] - (int((round(pos_obs_y[i]+325,2)))*(posmax[0]-posmin[0])/altura_tela))
                     ## 325 = [(400-250)/2 + 250]
-                    if(pos_y>=(pos_obs_y[i]+400) or pos_y<=(pos_obs_y[i]+250)): #Atualizar valores em função da altura da sereia.
+                    if(nova_posi>=(pos_obs_y[i]+400) or nova_posi<=(pos_obs_y[i]+250)): #Atualizar valores em função da altura da sereia.
+                        print(nova_posi, pos_obs_y)
                         pygame.mixer.Sound.play(colision_sound)
                         #colidiu += 1
                         #total_colisoes+=1
                         erros+=1
                         escolha = 2
 
-
-                    if(pos_y<=(pos_obs_y[i]+400) and pos_y>=(pos_obs_y[i]+250)): #Atualizar valores em função da altura da sereia.
-                        pygame.mixer.Sound.play(colision_sound)
+                    if(nova_posi<=(pos_obs_y[i]+400) and nova_posi>=(pos_obs_y[i]+250)): #Atualizar valores em função da altura da sereia.
+                        #pygame.mixer.Sound.play(colision_sound)
                         acertos+=1
-                        escolha = 2 ### DEPOIS ADICIONAR UMA IMAGEM POSITIVA DA SEREIA
+                        escolha = 1 ### DEPOIS ADICIONAR UMA IMAGEM POSITIVA DA SEREIA
         pos_y += velocidade_y
 
 
